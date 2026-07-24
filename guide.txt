@@ -1,0 +1,158 @@
+========================================================================
+  SUJANSHIP BLOG — ADMIN PANEL GUIDE
+  How to write and publish a blog post
+========================================================================
+
+------------------------------------------------------------------------
+0. BEFORE YOU START
+------------------------------------------------------------------------
+- Start the SERVER:   cd server   -> npm start   (runs on port 4000)
+- Start the CLIENT:   cd client   -> npm run dev  (Vite dev server)
+- Open the admin panel and sign in with the authorized Google account
+  (mrsujan321@gmail.com). Any other account sees "Access Denied".
+- Image uploads need the server running WITH valid Cloudinary keys in
+  server/.env (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET). If a key changes, RESTART the server.
+
+
+------------------------------------------------------------------------
+1. THE POST FORM — FIELD BY FIELD
+------------------------------------------------------------------------
+TITLE (required)
+  - Plain text. This is the headline shown on the article page and in
+    the post list.
+
+COVER IMAGE (optional)
+  - This is the big "hero" image at the top of the article AND the small
+    thumbnail in the post list.
+  - Two ways to set it:
+      1. Paste an image URL into the box, OR
+      2. Click the "Upload" button, pick a file -> it uploads to
+         Cloudinary and fills the URL automatically.
+  - A preview appears below. Click the (x) on the preview to remove it.
+  - Optional: a post works fine with no cover image.
+
+CONTENT (required)
+  - The rich-text editor (ReactQuill). See section 2 for formatting and
+    section 3 for code blocks.
+
+CATEGORY (required)
+  - Click one of the category chips, OR type a custom category name in
+    the box. Use "Add Category" to create a new reusable one.
+
+FEATURED (optional)
+  - Toggle the star button to mark a post as Featured. Featured posts are
+    highlighted on the site's home/featured section.
+
+PUBLISH
+  - Click "Publish Article" (or "Update Post" when editing).
+  - Title, Content, and Category are required or it will refuse to save.
+
+
+------------------------------------------------------------------------
+2. FORMATTING TEXT (the editor toolbar)
+------------------------------------------------------------------------
+Only these tools exist and will render on the live site:
+
+  Header (H1 / H2) .... Big section headings. Best way to break up and
+                        "highlight" sections of the article.
+  Bold / Italic /
+  Underline / Strike .. Emphasis on words or phrases.
+  Ordered list ........ Numbered steps (1, 2, 3...).
+  Bullet list ......... Bulleted key points.
+  Link ................ Select text -> click link -> paste URL.
+  Image ............... Inserts an uploaded image INLINE (see section 4).
+  Code block .......... Formatted, syntax-highlighted code (see section 3).
+  Align ............... Left / center / right.
+  Clean ............... Removes formatting from the selected text.
+
+TIP: To make information stand out, use an H2 heading, bold the key
+     phrase, or put points in a list. (There is no highlighter/marker or
+     quote button in the current toolbar.)
+
+
+------------------------------------------------------------------------
+3. WRITING CODE BLOCKS
+------------------------------------------------------------------------
+To add code to a post:
+  1. Put your cursor on a new line in the editor.
+  2. Click the CODE BLOCK button in the toolbar ( <> / "code-block" ).
+  3. Type or paste your code. Press Enter for new lines INSIDE the block.
+  4. To leave the code block, press Enter to make a new line, then click
+     the code-block button again to turn it off (or use "Clean").
+
+How it looks on the site:
+  - Code blocks are rendered with syntax highlighting (Prism).
+  - Highlighting is tuned for JavaScript by default; Python is also
+    supported. Other languages still show as monospaced code but may not
+    be color-highlighted.
+
+Good practice:
+  - Paste code as PLAIN text. If it looks messy, select it and click
+    "Clean" first, then re-apply the code block.
+  - Keep one code block per snippet; don't mix prose inside a code block.
+
+Example of what to put in a code block:
+
+    function greet(name) {
+      return `Hello, ${name}!`;
+    }
+    console.log(greet("Sujan"));
+
+
+------------------------------------------------------------------------
+4. ADDING IMAGES INSIDE THE ARTICLE (inline)
+------------------------------------------------------------------------
+  1. Put your cursor where you want the image in the content.
+  2. Click the IMAGE button in the editor toolbar.
+  3. Pick a file. It uploads to Cloudinary and is inserted at the cursor.
+  4. If upload fails you'll see a red toast with the reason (check the
+     server is running and Cloudinary keys are set).
+
+Notes:
+  - Inline images (toolbar) are UPLOADED files.
+  - The Cover Image can be uploaded OR a pasted URL.
+  - Max upload size is 5 MB; only image files are accepted.
+
+
+------------------------------------------------------------------------
+5. EDIT / DELETE / FEATURE EXISTING POSTS
+------------------------------------------------------------------------
+In "Manage Posts" below the form:
+  - Search by title, or filter by category / featured.
+  - EDIT: loads the post back into the form; make changes -> "Update Post".
+          Click "Cancel" to stop editing.
+  - STAR icon: toggles Featured on/off directly from the list.
+  - DELETE: asks for confirmation; this cannot be undone.
+
+
+------------------------------------------------------------------------
+6. RECOMMENDED WRITING FLOW
+------------------------------------------------------------------------
+  1. Enter the Title.
+  2. Upload (or paste) the Cover Image.
+  3. Write the body:
+       - Break sections with H2 headings.
+       - Bold key terms.
+       - Use lists for steps/points.
+       - Add inline images where helpful.
+       - Use code blocks for any code.
+  4. Pick a Category.
+  5. Toggle Featured if it should be highlighted.
+  6. Click Publish Article.
+  7. Open the post on the site and proof-read the final layout.
+
+
+------------------------------------------------------------------------
+7. TROUBLESHOOTING
+------------------------------------------------------------------------
+"Image upload not configured..."   -> Cloudinary keys missing/blank in
+                                      server/.env. Add all three, RESTART.
+"Unknown API key ..."              -> The key value is wrong (or still a
+                                      placeholder). Fix in .env, RESTART.
+"Image too large (max 5MB)"        -> Use a smaller image.
+Upload does nothing / 401          -> Make sure you are signed in as the
+                                      authorized admin; uploads require auth.
+Changes to .env not taking effect  -> .env is read only at startup.
+                                      Stop and restart the server.
+========================================================================

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sujanship — MERN Stack & Generative AI Articles</title>
+  <meta name="description" content="In-depth articles on MERN Stack, Generative AI, and modern web development." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta property="og:title" content="sujanship — MERN Stack & Generative AI Articles" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Inter (Geist substitute, 400/500/600) + JetBrains Mono (Geist Mono substitute) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* NOTE: don't reset margin/padding on `*` here — this <style> is unlayered
+       and would override Tailwind v4's layered utilities (px-*, mx-auto, …).
+       Tailwind's preflight already handles the reset. */
+    html {
+      font-feature-settings: "ss01", "ss02";
+    }
+
+    body {
+      background: #fafafa;
+      color: #171717;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background: #171717;
+      color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
