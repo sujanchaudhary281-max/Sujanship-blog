@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  // baseURL: import.meta.env.VITE_API_URL || 'https://blog-app-rdnu.onrender.com',
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000',
+  baseURL: import.meta.env.VITE_API_URL || 'https://sujanship-blog.onrender.com',
   withCredentials: true,
   timeout: 15000, // never let a hung request spin the UI forever
 })

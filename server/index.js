@@ -23,7 +23,7 @@ app.use(cookieParser()); // it parses incomming cookies from http
 // Default allows the common Vite dev ports (5173 auto-bumps to 5174+ when busy).
 const allowedOrigins = (
   process.env.CLIENT_ORIGINS ||
-  "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175"
+  "https://sujanship-blog.vercel.app,http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175"
 )
   .split(",")
   .map((o) => o.trim())
