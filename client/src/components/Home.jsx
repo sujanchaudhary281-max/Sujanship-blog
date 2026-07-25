@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import useFetchPosts from '../hooks/useFetchPosts'
 import useCategories from '../hooks/useCategories'
 import useFeaturedPosts from '../hooks/useFeaturedPosts'
+import { getPostDescription } from '../lib/utils'
 
 const strip = html => html?.replace(/<[^>]*>/g, '') ?? ''
 const readingTime = html => Math.max(1, Math.ceil(strip(html).split(/\s+/).length / 200))
@@ -40,7 +41,7 @@ function PostRow({ post }) {
           {post.title}
         </h3>
         <p className="mt-1.5 text-[14px] leading-6 text-body line-clamp-2">
-          {strip(post.content).slice(0, 160)}
+          {getPostDescription(post.content, 160)}
         </p>
         <span className="mt-2 inline-block font-mono text-[12px] leading-4 text-mute">
           {readingTime(post.content)} min read
@@ -127,7 +128,7 @@ export default function Home() {
                 {featured.title}
               </h2>
               <p className="mt-3 text-[15px] leading-7 text-body line-clamp-3">
-                {strip(featured.content).slice(0, 220)}
+                {getPostDescription(featured.content, 220)}
               </p>
               <div className="mt-4 flex items-center gap-2.5">
                 <span className="w-6 h-6 rounded-full bg-ink text-on-primary text-[11px] font-medium flex items-center justify-center">S</span>

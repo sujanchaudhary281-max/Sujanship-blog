@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { getPostDescription } from '../lib/utils'
 
 const strip = html => html?.replace(/<[^>]*>/g, '') ?? ''
 const readingTime = html => Math.max(1, Math.ceil(strip(html).split(/\s+/).length / 200))
@@ -28,7 +29,7 @@ const ArticleComponent = ({ data, category }) => (
             {post.title}
           </h2>
           <p className="mt-1.5 text-[14px] leading-6 text-body line-clamp-2">
-            {strip(post.content).slice(0, 160)}
+            {getPostDescription(post.content, 160)}
           </p>
           <span className="mt-2 inline-block font-mono text-[12px] leading-4 text-mute">
             {readingTime(post.content)} min read
