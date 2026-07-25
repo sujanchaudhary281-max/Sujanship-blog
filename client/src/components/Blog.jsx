@@ -36,14 +36,32 @@ export default function Blog() {
   const processContent = c => c.replace(/<pre class="ql-syntax"[^>]*>/g, m =>
     m.replace('<pre class="ql-syntax"', '<pre class="ql-syntax language-javascript"'))
 
+  const [showColdStartNotice, setShowColdStartNotice] = useState(false)
+
+  useEffect(() => {
+    let timer
+    if (loading) {
+      timer = setTimeout(() => setShowColdStartNotice(true), 2500)
+    } else {
+      setShowColdStartNotice(false)
+    }
+    return () => clearTimeout(timer)
+  }, [loading])
+
   // response is a single post object (was previously an array)
   const post = Array.isArray(item) ? item[0] : item
 
   return (
     <div className="flex-1 bg-canvas min-h-screen">
       {loading ? (
-        <div className="h-[60vh] flex items-center justify-center">
+        <div className="h-[60vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
           <div className="w-7 h-7 border-2 border-hairline-strong border-t-ink rounded-full animate-spin" />
+          {showColdStartNotice && (
+            <div className="p-3 rounded-[8px] bg-canvas-soft border border-hairline flex items-center gap-2.5 text-[13px] text-body max-w-sm animate-fade-in">
+              <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+              <span>Connecting to backend... Render server is waking up.</span>
+            </div>
+          )}
         </div>
       ) : error ? (
         <div className="max-w-[720px] mx-auto px-6 py-24 text-center">

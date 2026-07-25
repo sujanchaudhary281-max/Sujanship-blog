@@ -9,7 +9,7 @@ const posts = async (req, res, next) => {
         const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 10));
         const skip = (page - 1) * limit;
 
-        const filter = { category };
+        const filter = category === 'all' ? {} : { category };
         if (req.query.search) {
             filter.title = { $regex: req.query.search, $options: "i" };
         }

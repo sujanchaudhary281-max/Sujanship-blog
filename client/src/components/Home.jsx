@@ -51,22 +51,34 @@ function PostRow({ post }) {
 }
 
 export default function Home() {
-  const { categories, loading: catsLoading } = useCategories()
+  const { categories, loading: catsLoading, error: catsError } = useCategories()
+  const { data: featuredPosts, loading: featLoading, error: featError } = useFeaturedPosts()
 
   // posts collected per category name, plus which categories have finished loading
   const [postsByCat, setPostsByCat] = useState({})
   const [doneCats, setDoneCats] = useState({})
-  const [errored, setErrored] = useState(false)
+  const [catErrors, setCatErrors] = useState({})
+  const [showColdStartNotice, setShowColdStartNotice] = useState(false)
 
   const handleLoaded = useCallback((category, posts, error) => {
-    if (error) setErrored(true)
+    if (error) setCatErrors(prev => ({ ...prev, [category]: error }))
     setPostsByCat(prev => ({ ...prev, [category]: posts }))
     setDoneCats(prev => ({ ...prev, [category]: true }))
   }, [])
 
-  const { data: featuredPosts } = useFeaturedPosts()
+  const loading = catsLoading || featLoading || (categories.length > 0 && Object.keys(doneCats).length < categories.length)
+  const errored = !!catsError || Object.keys(catErrors).length > 0
 
-  const loading = catsLoading || (categories.length > 0 && Object.keys(doneCats).length < categories.length)
+  // If backend takes longer than 2.5s (e.g. Render cold start), show subtle notification
+  React.useEffect(() => {
+    let timer
+    if (loading) {
+      timer = setTimeout(() => setShowColdStartNotice(true), 2500)
+    } else {
+      setShowColdStartNotice(false)
+    }
+    return () => clearTimeout(timer)
+  }, [loading])
 
   const all = Object.values(postsByCat)
     .flat()
@@ -96,7 +108,7 @@ export default function Home() {
       </header>
 
       {/* Featured lead */}
-      {featured && (
+      {!loading && featured && (
         <section className="py-10 border-b border-hairline">
           <p className="font-mono text-[12px] leading-4 text-mute uppercase tracking-[0.14em] mb-5">Featured</p>
           <Link to={`/blog/${featured._id}`} className="group grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-7 items-center">
@@ -130,7 +142,7 @@ export default function Home() {
 
       {/* Latest — editorial list */}
       <section className="py-10">
-        {rest.length > 0 && (
+        {!loading && rest.length > 0 && (
           <>
             <div className="flex items-baseline justify-between mb-2">
               <h2 className="text-[15px] font-semibold text-ink">Latest</h2>
@@ -143,18 +155,26 @@ export default function Home() {
         )}
 
         {/* Loading skeleton — list rows */}
-        {loading && all.length === 0 && (
-          <div className="divide-y divide-hairline">
-            {[1,2,3,4,5].map(i => (
-              <div key={i} className="flex gap-5 py-6">
-                <div className="skeleton hidden sm:block w-28 h-20 rounded-[6px] shrink-0" />
-                <div className="flex-1 space-y-2.5">
-                  <div className="skeleton h-3 w-24 rounded" />
-                  <div className="skeleton h-4 w-3/4 rounded" />
-                  <div className="skeleton h-3 w-1/2 rounded" />
-                </div>
+        {loading && (
+          <div>
+            {showColdStartNotice && (
+              <div className="mb-6 p-3.5 rounded-[8px] bg-canvas-soft border border-hairline flex items-center gap-3 text-[13px] text-body animate-fade-in">
+                <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+                <span>Connecting to backend... Render server is spinning up, please wait a moment.</span>
               </div>
-            ))}
+            )}
+            <div className="divide-y divide-hairline">
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className="flex gap-5 py-6">
+                  <div className="skeleton hidden sm:block w-28 h-20 rounded-[6px] shrink-0" />
+                  <div className="flex-1 space-y-2.5">
+                    <div className="skeleton h-3 w-24 rounded" />
+                    <div className="skeleton h-4 w-3/4 rounded" />
+                    <div className="skeleton h-3 w-1/2 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -167,7 +187,7 @@ export default function Home() {
         {!loading && errored && all.length === 0 && (
           <div className="py-16">
             <p className="text-[16px] font-medium text-ink mb-1">Failed to load articles</p>
-            <p className="text-[14px] text-body">Please try again later.</p>
+            <p className="text-[14px] text-body">Unable to reach backend service. Please try again later.</p>
           </div>
         )}
 

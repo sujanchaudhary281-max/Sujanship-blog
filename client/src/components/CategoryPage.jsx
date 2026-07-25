@@ -11,9 +11,20 @@ export default function CategoryPage() {
   const category = decodeURIComponent(name || '')
   const [page, setPage] = useState(1)
   const { data, total, totalPages, loading, error } = useFetchPosts(category, page)
+  const [showColdStartNotice, setShowColdStartNotice] = useState(false)
 
   // reset to first page whenever the category changes
   useEffect(() => { setPage(1) }, [category])
+
+  useEffect(() => {
+    let timer
+    if (loading) {
+      timer = setTimeout(() => setShowColdStartNotice(true), 2500)
+    } else {
+      setShowColdStartNotice(false)
+    }
+    return () => clearTimeout(timer)
+  }, [loading])
 
   return (
     <main className="flex-1 max-w-[880px] mx-auto w-full px-6">
@@ -30,17 +41,25 @@ export default function CategoryPage() {
 
       <section className="py-8">
         {loading && (
-          <div className="divide-y divide-hairline">
-            {[1,2,3,4,5].map(i => (
-              <div key={i} className="flex gap-5 py-6">
-                <div className="skeleton hidden sm:block w-28 h-20 rounded-[6px] shrink-0" />
-                <div className="flex-1 space-y-2.5">
-                  <div className="skeleton h-3 w-24 rounded" />
-                  <div className="skeleton h-4 w-3/4 rounded" />
-                  <div className="skeleton h-3 w-1/2 rounded" />
-                </div>
+          <div>
+            {showColdStartNotice && (
+              <div className="mb-6 p-3.5 rounded-[8px] bg-canvas-soft border border-hairline flex items-center gap-3 text-[13px] text-body animate-fade-in">
+                <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+                <span>Connecting to backend... Render server is spinning up, please wait a moment.</span>
               </div>
-            ))}
+            )}
+            <div className="divide-y divide-hairline">
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className="flex gap-5 py-6">
+                  <div className="skeleton hidden sm:block w-28 h-20 rounded-[6px] shrink-0" />
+                  <div className="flex-1 space-y-2.5">
+                    <div className="skeleton h-3 w-24 rounded" />
+                    <div className="skeleton h-4 w-3/4 rounded" />
+                    <div className="skeleton h-3 w-1/2 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
         {error && (
